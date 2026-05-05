@@ -16,7 +16,7 @@ async def main():
     # connector = aiohttp.TCPConnector(limit=200)
 
     async with aiohttp.ClientSession() as session:
-        urls = ["http://example.com" for _ in range(1000)]
+        urls = ["https://example.com" for _ in range(1000)]
 
         tasks = [fetch(session, url) for url in urls]
 

@@ -8,24 +8,24 @@ from utils import async_timed
 # s = AsyncSession(multiplexed=True)
 
 
-# @async_timed()
-# async def fetch_status(url: str) -> int:
-#     async with AsyncSession() as session:
-#         result = await session.get(url)
+@async_timed()
+async def fetch_status(url: str) -> int:
+    async with AsyncSession() as session:
+        result = await session.get(url)
 
-#         return result.status_code
+        return result.status_code
 
 
-# @async_timed()
-# async def main():
-#     urls = ["https://www.example.com" for _ in range(1000)]
+@async_timed()
+async def main():
+    urls = ["https://www.example.com" for _ in range(1000)]
 
-#     async with AsyncSession() as session:
-#         tasks = [fetch_status(session, url) for url in urls]
+    async with AsyncSession(timeout=50) as session:
+        tasks = [fetch_status(url) for url in urls]
 
-#         status_codes = await asyncio.gather(*tasks)
+        status_codes = await asyncio.gather(*tasks)
 
-#     print(status_codes)
+    print(status_codes)
 
 
 # @async_timed()
@@ -64,24 +64,24 @@ from utils import async_timed
 #     print(results)
 
 
-@async_timed()
-async def main():
-    async with AsyncSession(multiplexed=True) as session:
-        # Step 1: schedule requests (coroutines)
+# @async_timed()
+# async def main():
+#     async with AsyncSession(multiplexed=True) as session:
+#         # Step 1: schedule requests (coroutines)
 
-        coros = [session.get("https://www.example.com") for _ in range(1000)]
+#         coros = [session.get("https://www.example.com") for _ in range(1000)]
 
-        # Step 2: run them concurrently → get lazy responses
+#         # Step 2: run them concurrently → get lazy responses
 
-        lazy_responses = await asyncio.gather(*coros)
+#         lazy_responses = await asyncio.gather(*coros)
 
-        # Step 3: resolve all responses via session
+#         # Step 3: resolve all responses via session
 
-        responses = await session.gather(*lazy_responses)
+#         responses = await session.gather(*lazy_responses)
 
-        status_codes = [r.status_code for r in responses]
+#         status_codes = [r.status_code for r in responses]
 
-    print(status_codes)
+#     print(status_codes)
 
 
 asyncio.run(main())
